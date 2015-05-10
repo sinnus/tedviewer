@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:name=".activity.VideoActivity"
             android:label="@string/title_activity_video"
             android:configChanges="orientation|screenSize">
