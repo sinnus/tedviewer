@@ -10,13 +10,16 @@ import android.widget.TextView;
 import com.example.kirill.myapplication.R;
 import com.example.kirill.myapplication.vo.FeedVO;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class FeedAdapter extends BaseAdapter {
 
     private List<FeedVO> itemList;
+    private SimpleDateFormat pubDateFormat;
 
     public FeedAdapter() {
+        this.pubDateFormat = new SimpleDateFormat("dd.MM.yyyy HH:MM:ss");
     }
 
     public int getCount() {
@@ -52,6 +55,11 @@ public class FeedAdapter extends BaseAdapter {
 
         TextView descTextView = (TextView) v.findViewById(R.id.descTextView);
         descTextView.setText(feed.getDescription());
+
+        if (feed.getPubDate() != null) {
+            TextView dateTextView = (TextView) v.findViewById(R.id.dateTextView);
+            dateTextView.setText(pubDateFormat.format(feed.getPubDate()));
+        }
 
         return v;
     }

@@ -18,4 +18,12 @@
         android:textStyle="normal"
         style="@android:style/TextAppearance.Small"
         android:id="@+id/descTextView" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="normal"
+        android:paddingTop="5dp"
+        style="@android:style/TextAppearance.Small"
+        android:id="@+id/dateTextView" />
 </LinearLayout>

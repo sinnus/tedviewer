@@ -10,15 +10,21 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FeedXmlParser {
 
     // We don't use namespaces
     private static final String ns = null;
+    private SimpleDateFormat pubDateFormat;
 
     public List<FeedVO> parse(InputStream in) throws XmlPullParserException, IOException {
+        pubDateFormat = new SimpleDateFormat("EE, dd MMM yyyy HH:mm:ss Z", Locale.US);
+
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -68,6 +74,7 @@ public class FeedXmlParser {
         parser.require(XmlPullParser.START_TAG, ns, "item");
         String title = null;
         String description = null;
+        Date pubDate = null;
         MediaContentVO mediaContent = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -75,29 +82,28 @@ public class FeedXmlParser {
             }
             String name = parser.getName();
             if ("title".equals(name)) {
-                title = readTitle(parser);
+                title = readTextByTagName(name, parser);
             } else if ("itunes:summary".equals(name)) {
-                description = readDescription(parser);
+                description = readTextByTagName(name, parser);
             } else if ("media:content".equals(name)) {
                 mediaContent = readMediaContent(parser);
+            } else if ("pubDate".equals(name)) {
+                try {
+                    pubDate = pubDateFormat.parse(readTextByTagName(name, parser));
+                } catch (Exception e) {
+                    pubDate = null;
+                }
             } else {
                 skip(parser);
             }
         }
-        return new FeedVO(title, description, mediaContent);
+        return new FeedVO(title, description, pubDate, mediaContent);
     }
 
-    private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "title");
+    private String readTextByTagName(String tagName, XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, tagName);
         String title = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "title");
-        return title;
-    }
-
-    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "itunes:summary");
-        String title = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "itunes:summary");
+        parser.require(XmlPullParser.END_TAG, ns, tagName);
         return title;
     }
 
