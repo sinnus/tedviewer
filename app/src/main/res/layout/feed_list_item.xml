@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"
+        style="@android:style/TextAppearance.Large"
         android:id="@+id/titleTextView" />
 
     <TextView

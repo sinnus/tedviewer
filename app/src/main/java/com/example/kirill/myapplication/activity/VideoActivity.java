@@ -31,8 +31,6 @@ public class VideoActivity extends BaseActivity {
 
         feed = (FeedVO) getIntent().getSerializableExtra("item");
         videoView = (VideoView) findViewById(R.id.videoView);
-        Uri uri = Uri.parse(feed.getMediaContent().getUrl());
-        videoView.setVideoURI(uri);
 
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -45,6 +43,16 @@ public class VideoActivity extends BaseActivity {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
                 hideLoading();
+                if (what == MediaPlayer.MEDIA_ERROR_UNKNOWN && extra == -1002) {
+                    showTryConnection(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            videoView.stopPlayback();
+                            play();
+                        }
+                    });
+                    return true;
+                }
                 return false;
             }
         });
@@ -54,17 +62,25 @@ public class VideoActivity extends BaseActivity {
         videoView.setMediaController(mediaController);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void play() {
+        hideTryConnection();
         showLoading();
+        Uri uri = Uri.parse(feed.getMediaContent().getUrl());
+        videoView.setVideoURI(uri);
         videoView.seekTo(videoPosition);
         videoView.start();
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        play();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
+        hideLoading();
         videoPosition = videoView.getCurrentPosition();
         videoView.pause();
     }
