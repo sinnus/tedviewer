@@ -17,6 +17,7 @@ import com.example.kirill.myapplication.adapter.FeedAdapter;
 import com.example.kirill.myapplication.parser.FeedXmlParser;
 import com.example.kirill.myapplication.vo.FeedVO;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -49,7 +50,10 @@ public class MainActivity extends BaseActivity {
 
         List<FeedVO> feeds = new ArrayList<>();
         feedAdapter.setItemList(feeds);
+        loadFeed();
+    }
 
+    private void loadFeed() {
         FeedListViewLoader loader = new FeedListViewLoader();
         loader.execute();
     }
@@ -86,6 +90,15 @@ public class MainActivity extends BaseActivity {
             if (e == null) {
                 feedAdapter.setItemList(feedVOs);
                 return;
+            }
+            if (e instanceof IOException) {
+                showTryConnection(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        hideTryConnection();
+                        loadFeed();
+                    }
+                });
             }
         }
 
