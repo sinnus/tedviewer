@@ -14,12 +14,12 @@ import com.example.kirill.myapplication.R;
 public class BaseActivity extends AppCompatActivity {
 
     protected ViewGroup rootView;
-    private FrameLayout loadingView;
+    private RelativeLayout loadingView;
     private RelativeLayout noConnectionView;
 
     public void showLoading() {
         LayoutInflater vi = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        loadingView = (FrameLayout) vi.inflate(R.layout.loading, null);
+        loadingView = (RelativeLayout) vi.inflate(R.layout.loading, null);
         rootView.addView(loadingView, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
