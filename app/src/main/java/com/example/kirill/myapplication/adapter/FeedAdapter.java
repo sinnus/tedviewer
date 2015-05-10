@@ -47,8 +47,12 @@ public class FeedAdapter extends BaseAdapter {
             v = (LinearLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.feed_list_item, null);
         }
         FeedVO feed = getItem(position);
-        TextView textView = (TextView) v.findViewById(R.id.textView);
-        textView.setText(feed.getTitle());
+        TextView titleTextView = (TextView) v.findViewById(R.id.titleTextView);
+        titleTextView.setText(feed.getTitle());
+
+        TextView descTextView = (TextView) v.findViewById(R.id.descTextView);
+        descTextView.setText(feed.getDescription());
+
         return v;
     }
 

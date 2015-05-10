@@ -67,6 +67,7 @@ public class FeedXmlParser {
     private FeedVO readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "item");
         String title = null;
+        String description = null;
         MediaContentVO mediaContent = null;
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -75,19 +76,28 @@ public class FeedXmlParser {
             String name = parser.getName();
             if ("title".equals(name)) {
                 title = readTitle(parser);
+            } else if ("itunes:summary".equals(name)) {
+                description = readDescription(parser);
             } else if ("media:content".equals(name)) {
                 mediaContent = readMediaContent(parser);
             } else {
                 skip(parser);
             }
         }
-        return new FeedVO(title, mediaContent);
+        return new FeedVO(title, description, mediaContent);
     }
 
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "title");
+        return title;
+    }
+
+    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+        parser.require(XmlPullParser.START_TAG, ns, "itunes:summary");
+        String title = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "itunes:summary");
         return title;
     }
 
